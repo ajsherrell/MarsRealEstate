@@ -17,4 +17,48 @@
 
 package com.example.android.marsrealestate.network
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.Deferred
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.GET
+
 private const val BASE_URL = " https://android-kotlin-fun-mars-server.appspot.com/"
+
+private val moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+
+private val retrofit = Retrofit.Builder()
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addCallAdapterFactory(CoroutineCallAdapterFactory())
+        .baseUrl(BASE_URL)
+        .build()
+
+//define an interface that defines how Retrofit talks to the web server using HTTP requests.
+interface MarsApiService {
+    @GET("realestate")
+    fun getProperties():
+            Deferred<List<MarsProperty>>
+}
+/** Right now the goal is to get the JSON response string from the web service,
+ * and you only need one method to do that: getProperties(). To tell Retrofit what this method should do,
+ * use a @GET annotation and specify the path, or endpoint, for that web service method.
+ * In this case the endpoint is called realestate. When the getProperties() method is invoked,
+ * Retrofit appends the endpoint realestate to the base URL (which you defined in the Retrofit builder),
+ * and creates a Call object. That Call object is used to start the request. */
+
+//define a public object called MarsApi to initialize the Retrofit service.
+object MarsApi {
+    val retrofitService: MarsApiService by lazy {
+        retrofit.create(MarsApiService::class.java)
+    }
+}
+/** The Retrofit create() method creates the Retrofit service itself with the MarsApiService interface.
+ *  Because this call is expensive, and the app only needs one Retrofit service instance,
+ *  you expose the service to the rest of the app using a public object called MarsApi,
+ *  and lazily initialize the Retrofit service there. Now that all the setup is done,
+ *  each time your app calls MarsApi.retrofitService,
+ *  it will get a singleton Retrofit object that implements MarsApiService.*/

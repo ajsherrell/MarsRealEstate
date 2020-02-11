@@ -30,7 +30,8 @@ import com.example.android.marsrealestate.databinding.FragmentOverviewBinding
 class OverviewFragment : Fragment() {
 
     /**
-     * Lazily initialize our [OverviewViewModel].
+     * Lazily initialize our [OverviewViewModel]. The OverviewFragment lazily initializes
+     * the OverviewViewModel, which means the OverviewViewModel is created the first time it is used.
      */
     private val viewModel: OverviewViewModel by lazy {
         ViewModelProviders.of(this).get(OverviewViewModel::class.java)
@@ -45,6 +46,7 @@ class OverviewFragment : Fragment() {
         val binding = FragmentOverviewBinding.inflate(inflater)
 
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
+        //Because we've set the lifecycle owner, any LiveData used in data binding will automatically be observed for any changes, and the UI will be updated accordingly.
         binding.setLifecycleOwner(this)
 
         // Giving the binding access to the OverviewViewModel
