@@ -5,6 +5,8 @@
 - Retrofit
 - REST
 - Moshi
+- Glide
+- Binding Adapter
 
 Introduction
 ------------
@@ -63,6 +65,16 @@ The MarsApiService class holds the network layer for the app; that is, this is t
 ### Moshi
 - an Android JSON parser that converts a JSON string into Kotlin objects. Retrofit has a converter that works with Moshi, so it's a great library for your purposes here.
 
+### Glide
+- you can use a community-developed library called Glide to download, buffer, decode, and cache your images. Glide leaves you with a lot less work than if you had to do all of this from scratch.
+
+Glide basically needs two things:
+
+The URL of the image you want to load and show.
+An ImageView object to display that image.
+- Binding Adapter: you have the URL of an image to display, and it's time to start working with Glide to load that image. In this step, you use a binding adapter to take the URL from an XML attribute associated with an ImageView, and you use Glide to load the image. Binding adapters are extension methods that sit between a view and bound data to provide custom behavior when the data changes. In this case, the custom behavior is to call Glide to load an image from a URL into an ImageView.
+- You want the final Uri object to use the HTTPS scheme, because the server you pull the images from requires that scheme. To use the HTTPS scheme, append buildUpon.scheme("https") to the toUri builder. The toUri() method is a Kotlin extension function from the Android KTX core library, so it just looks like it's part of the String class.
+
 #### Summary
 - REST web services:
 A web service is a service on the internet that enables your app to make requests and get data back.
@@ -85,4 +97,12 @@ To use a different property name for a key, annotate that property with the @Jso
 - Retrofit and coroutines:
 Call adapters let Retrofit create APIs that return something other than the default Call class. Use the CoroutineCallAdapterFactory class to replace the Call with a coroutine Deferred.
 Use the await() method on the Deferred object to cause your coroutine code to wait without blocking until the value is ready, and then the value is returned.
+
+- To simplify the process of managing images, use the Glide library to download, buffer, decode, and cache images in your app.
+Glide needs two things to load an image from the internet: the URL of an image, and an ImageView object to put the image in. To specify these options, use the load() and into() methods with Glide.
+Binding adapters are extension methods that sit between a view and that view's bound data. Binding adapters provide custom behavior when the data changes, for example, to call Glide to load an image from a URL into an ImageView.
+Binding adapters are extension methods annotated with the @BindingAdapter annotation.
+To add options to the Glide request, use the apply() method. For example, use apply() with placeholder() to specify a loading drawable, and use apply() with error() to specify an error drawable.
+To produce a grid of images, use a RecyclerView with a GridLayoutManager.
+To update the list of properties when it changes, use a binding adapter between the RecyclerView and the layout.
 
