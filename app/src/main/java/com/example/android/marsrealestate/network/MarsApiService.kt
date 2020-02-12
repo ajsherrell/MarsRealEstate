@@ -24,6 +24,14 @@ import kotlinx.coroutines.Deferred
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
+
+//filter the service
+enum class MarsApiFilter(val value: String) {
+    SHOW_RENT("rent"),
+    SHOW_BUY("buy"),
+    SHOW_ALL("all")
+}
 
 private const val BASE_URL = " https://android-kotlin-fun-mars-server.appspot.com/"
 
@@ -40,7 +48,7 @@ private val retrofit = Retrofit.Builder()
 //define an interface that defines how Retrofit talks to the web server using HTTP requests.
 interface MarsApiService {
     @GET("realestate")
-    fun getProperties():
+    fun getProperties(@Query("filter") type: String):
             Deferred<List<MarsProperty>>
 }
 /** Right now the goal is to get the JSON response string from the web service,
@@ -48,7 +56,12 @@ interface MarsApiService {
  * use a @GET annotation and specify the path, or endpoint, for that web service method.
  * In this case the endpoint is called realestate. When the getProperties() method is invoked,
  * Retrofit appends the endpoint realestate to the base URL (which you defined in the Retrofit builder),
- * and creates a Call object. That Call object is used to start the request. */
+ * and creates a Call object. That Call object is used to start the request.
+ *
+ * The @Query annotation tells the getProperties() method (and thus Retrofit)
+ * to make the web service request with the filter option. Each time getProperties()
+ * is called, the request URL includes the ?filter=type portion, which directs the web
+ * service to respond with results that match that query.*/
 
 //define a public object called MarsApi to initialize the Retrofit service.
 object MarsApi {

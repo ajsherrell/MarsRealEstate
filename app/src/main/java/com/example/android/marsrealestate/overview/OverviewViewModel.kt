@@ -21,6 +21,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.marsrealestate.network.MarsApi
+import com.example.android.marsrealestate.network.MarsApiFilter
 import com.example.android.marsrealestate.network.MarsProperty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -64,7 +65,7 @@ class OverviewViewModel : ViewModel() {
      * Call getMarsRealEstateProperties() on init so we can display status immediately.
      */
     init {
-        getMarsRealEstateProperties()
+        getMarsRealEstateProperties(MarsApiFilter.SHOW_ALL)
     }
 
     /**
@@ -74,9 +75,9 @@ class OverviewViewModel : ViewModel() {
      * returns a Call object. Then you can call enqueue() on that object to start the network request on a
      * background thread.
      */
-    private fun getMarsRealEstateProperties() { //Calling getProperties() from the MarsApi service creates and starts the network call on a background thread, returning the Deferred object for that task.
+    private fun getMarsRealEstateProperties(filter: MarsApiFilter) { //Calling getProperties() from the MarsApi service creates and starts the network call on a background thread, returning the Deferred object for that task.
         coroutineScope.launch {
-            var getPropertiesDeferred = MarsApi.retrofitService.getProperties()
+            var getPropertiesDeferred = MarsApi.retrofitService.getProperties(filter.value)
 
             try {
                 _status.value = MarsApiStatus.LOADING
@@ -95,6 +96,10 @@ class OverviewViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
+    }
+
+    fun updateFilter(filter: MarsApiFilter) {
+        getMarsRealEstateProperties(filter)
     }
 }
 
