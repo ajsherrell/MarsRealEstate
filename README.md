@@ -7,6 +7,7 @@
 - Moshi
 - Glide
 - Binding Adapter
+- Parcelable
 
 Introduction
 ------------
@@ -75,6 +76,9 @@ An ImageView object to display that image.
 - Binding Adapter: you have the URL of an image to display, and it's time to start working with Glide to load that image. In this step, you use a binding adapter to take the URL from an XML attribute associated with an ImageView, and you use Glide to load the image. Binding adapters are extension methods that sit between a view and bound data to provide custom behavior when the data changes. In this case, the custom behavior is to call Glide to load an image from a URL into an ImageView.
 - You want the final Uri object to use the HTTPS scheme, because the server you pull the images from requires that scheme. To use the HTTPS scheme, append buildUpon.scheme("https") to the toUri builder. The toUri() method is a Kotlin extension function from the Android KTX core library, so it just looks like it's part of the String class.
 
+### Parcelable
+- The Parcelable interface enables objects to be serialized, so that the objects' data can be passed around between fragments or activities. In this case, for the data inside the MarsProperty object to be passed to the detail fragment via Safe Args, MarsProperty must implement the Parcelable interface. The good news is that Kotlin provides an easy shortcut for implementing that interface. Add the @Parcelize annotation to the class definition. The @Parcelize annotation uses the Kotlin Android extensions to automatically implement the methods in the Parcelable interface for this class. You don't have to do anything else!
+
 #### Summary
 - REST web services:
 A web service is a service on the internet that enables your app to make requests and get data back.
@@ -105,4 +109,10 @@ Binding adapters are extension methods annotated with the @BindingAdapter annota
 To add options to the Glide request, use the apply() method. For example, use apply() with placeholder() to specify a loading drawable, and use apply() with error() to specify an error drawable.
 To produce a grid of images, use a RecyclerView with a GridLayoutManager.
 To update the list of properties when it changes, use a binding adapter between the RecyclerView and the layout.
+- Binding expressions:
+Use binding expressions in XML layout files to perform simple programmatic operations, such as math or conditional tests, on bound data.
+To reference classes inside your layout file, use the <import> tag inside the <data> tag.
+- Web service query options:
+Requests to web services can include optional parameters.
+To specify query parameters in the request, use the @Query annotation in Retrofit.
 

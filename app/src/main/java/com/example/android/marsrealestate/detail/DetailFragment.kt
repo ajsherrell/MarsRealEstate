@@ -34,7 +34,18 @@ class DetailFragment : Fragment() {
         @Suppress("UNUSED_VARIABLE")
         val application = requireNotNull(activity).application
         val binding = FragmentDetailBinding.inflate(inflater)
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
+
+        /** This line gets the selected MarsProperty object from the Safe Args.
+         * Notice the use of Kotlin's not-null assertion operator (!!).
+         * If the selectedProperty isn't there, something terrible has happened and you actually want the code to throw a null pointer.
+         * (In production code, you should handle that error in some way.)*/
+        val marsProperty = DetailFragmentArgs.fromBundle(arguments!!).selectedProperty
+
+        //get a new detailviewmodelfactory
+        val viewModelFactory = DetailViewModelFactory(marsProperty, application)
+        binding.viewModel = ViewModelProviders.of(this, viewModelFactory).get(DetailViewModel::class.java)
+
         return binding.root
     }
 }

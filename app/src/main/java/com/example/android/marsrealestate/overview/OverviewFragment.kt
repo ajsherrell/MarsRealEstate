@@ -20,7 +20,9 @@ package com.example.android.marsrealestate.overview
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.example.android.marsrealestate.R
 import com.example.android.marsrealestate.databinding.FragmentOverviewBinding
 import com.example.android.marsrealestate.databinding.GridViewItemBinding
@@ -56,7 +58,21 @@ class OverviewFragment : Fragment() {
         binding.viewModel = viewModel
 
         //initialize RV adapter to the photo grid
-        binding.photosGrid.adapter = PhotoGridAdapter()
+        binding.photosGrid.adapter = PhotoGridAdapter(PhotoGridAdapter.OnClickListener {
+            viewModel.displayPropertyDetails(it)
+        })
+
+        /**The observer tests whether MarsProperty—the it in the lambda—is not null, and if so,
+         *  it gets the navigation controller from the fragment with findNavController().
+         *  Call displayPropertyDetailsComplete() to tell the view model to reset the LiveData to the null state,
+         *  so you won't accidentally trigger navigation again when the app returns back to the OverviewFragment. */
+        viewModel.navigateToSelectedProperty.observe(this, Observer {
+            if (null != it) {
+                this.findNavController().navigate(
+                        OverviewFragmentDirections.actionShowDetail(it))
+                viewModel.displayPropertyDetailsComplete()
+            }
+        })
 
         setHasOptionsMenu(true)
         return binding.root

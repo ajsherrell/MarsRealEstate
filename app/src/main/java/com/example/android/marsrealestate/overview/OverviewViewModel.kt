@@ -61,6 +61,11 @@ class OverviewViewModel : ViewModel() {
             viewModelJob + Dispatchers.Main
     )
 
+    //for navigation
+    private val _navigateToSelectedProperty = MutableLiveData<MarsProperty>()
+    val navigateToSelectedProperty: LiveData<MarsProperty>
+        get() = _navigateToSelectedProperty
+
     /**
      * Call getMarsRealEstateProperties() on init so we can display status immediately.
      */
@@ -101,6 +106,15 @@ class OverviewViewModel : ViewModel() {
     fun updateFilter(filter: MarsApiFilter) {
         getMarsRealEstateProperties(filter)
     }
+
+    //method to take the selected property when navigating
+    fun displayPropertyDetails(marsProperty: MarsProperty) {
+        _navigateToSelectedProperty.value = marsProperty
+    }
+
+    fun displayPropertyDetailsComplete() {
+        _navigateToSelectedProperty.value = null
+    } //mark the navigation state to complete, and to avoid the navigation being triggered again when the user returns from the detail view.
 }
 
 /** private fun getMarsRealEstateProperties() {
